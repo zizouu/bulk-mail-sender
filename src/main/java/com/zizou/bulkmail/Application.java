@@ -1,8 +1,11 @@
 package com.zizou.bulkmail;
 
 import com.zizou.bulkmail.gui.MainFrame;
+import com.zizou.bulkmail.service.ModuleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
@@ -14,7 +17,7 @@ public class Application {
         ConfigurableApplicationContext context = null;
         try{
             context = (new SpringApplicationBuilder(new Object[]{Application.class})).headless(false).run(args);
-            MainFrame mainFrame = context.getBean(MainFrame.class);
+            MainFrame mainFrame = ModuleService.getBean(MainFrame.class);
             mainFrame.showWindow();
 
             do{
@@ -28,5 +31,10 @@ public class Application {
             }
         }
 
+    }
+
+    @Autowired
+    private void init(ApplicationContext context){
+        ModuleService.setContext(context);
     }
 }

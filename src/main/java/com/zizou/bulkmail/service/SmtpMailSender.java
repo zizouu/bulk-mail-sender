@@ -37,11 +37,12 @@ public class SmtpMailSender {
 
     public void sendMail() throws Exception{
         Properties props = System.getProperties();
-        props.setProperty("mail.smtp.host", "smtp.gmail.com");
+        //props.setProperty("mail.smtp.host", "smtp.gmail.com");
+        props.setProperty("mail.smtp.host", "172.22.1.103");
 
         Session session = Session.getDefaultInstance(props);
+        session.setDebug(true);
         MimeMessage msg = new MimeMessage(session);
-
         msg.setFrom("thecarlos@daou.co.kr");
         msg.addRecipient(Message.RecipientType.TO, new InternetAddress("thecarlos@naver.com"));
         msg.setSubject("test subject");

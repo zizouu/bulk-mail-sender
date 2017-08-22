@@ -1,6 +1,6 @@
 package com.zizou.bulkmail.gui;
 
-import com.zizou.bulkmail.gui.panel.ServerPanel;
+import com.zizou.bulkmail.gui.panel.RootPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class MainFrame extends JFrame{
     private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
 
     @Autowired
-    private ServerPanel serverPanel;
+    private RootPanel rootPanel;
 
     public void showWindow(){
         this.setDefaultCloseOperation(3);
@@ -29,9 +29,7 @@ public class MainFrame extends JFrame{
     }
 
     public void initLayout(){
-        log.info("init main frame start");
         this.setLayout(new BorderLayout());
-        this.add(this.serverPanel, "Center");
-        log.info("init main frame stop");
+        this.add(this.rootPanel, "Center");
     }
 }
