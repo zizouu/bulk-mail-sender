@@ -1,6 +1,5 @@
 package com.zizou.bulkmail.service;
 
-import com.zizou.bulkmail.gui.util.PanelCreator;
 import com.zizou.bulkmail.util.EncodingTextUtil;
 
 import javax.mail.*;

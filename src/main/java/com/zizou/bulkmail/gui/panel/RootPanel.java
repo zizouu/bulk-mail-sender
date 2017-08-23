@@ -1,5 +1,7 @@
 package com.zizou.bulkmail.gui.panel;
 
+import com.zizou.bulkmail.data.EmlData;
+import com.zizou.bulkmail.data.SaveTypeData;
 import com.zizou.bulkmail.service.EmlCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -29,13 +32,15 @@ public class RootPanel extends JPanel {
 
    @PostConstruct
    private void init(){
-      log.info("initial start");
-      this.setLayout(new BoxLayout(this, 1));
-      this.add(emlPanel);
-      this.add(savePanel);
-      this.createButton.addActionListener(this.createGetTextEvent());
+      this.setLayout(new BorderLayout());
+      this.add(this.emlPanel, BorderLayout.PAGE_START);
+      this.add(this.savePanel, BorderLayout.CENTER);
 
-      log.info("initial finish");
+      JPanel actionPanel = new JPanel(new FlowLayout());
+      this.createButton.setSize(60, 40);
+      this.createButton.addActionListener(this.createGetTextEvent());
+      actionPanel.add(this.createButton);
+      this.add(actionPanel, BorderLayout.PAGE_END);
    }
 
    private ActionListener createGetTextEvent(){
@@ -43,10 +48,11 @@ public class RootPanel extends JPanel {
          @Override
          public void actionPerformed(ActionEvent e) {
             try{
-               EmlCreator eml = new EmlCreator();
-               eml.setParentDir(RootPanel.this.chooseEmlPath());
-               //eml.setHeader(RootPanel.this.getHeaderData());
-               eml.create();
+               EmlCreator creator = new EmlCreator();
+               if(getData(creator)){
+                  int count = creator.create();
+                  JOptionPane.showMessageDialog(RootPanel.this, count + " Messages created!");
+               }
             }catch (Exception ex){
                log.info(ex.getMessage());
             }
@@ -55,13 +61,14 @@ public class RootPanel extends JPanel {
       };
    }
 
-   public File chooseEmlPath(){
-      JFileChooser chooser = new JFileChooser();
-      chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-      chooser.showDialog(RootPanel.this, "Select");
-      File dir = chooser.getSelectedFile();
-      //this.savePanel.setAreaText(dir.getAbsolutePath());
+   private boolean getData(EmlCreator creator){
+      boolean result = false;
+      if(this.emlPanel.dataInvalidCheck() && this.savePanel.dataInvalidCheck()){
+         creator.setEmlData(emlPanel.getEmlData());
+         creator.setSaveTypeData(savePanel.getSaveTypeData());
+         result = true;
+      }
 
-      return dir;
+      return result;
    }
 }

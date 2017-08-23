@@ -3,6 +3,7 @@ package com.zizou.bulkmail.gui.panel;
 import com.zizou.bulkmail.data.EmlData;
 import com.zizou.bulkmail.data.RandomPanelData;
 import com.zizou.bulkmail.gui.ui.LabeledTextPanel;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -12,7 +13,7 @@ import javax.swing.*;
  * Created by zizou on 2017-08-21.
  */
 @Component
-public class EmlPanel extends JPanel{
+public class EmlPanel extends AbstractPanel{
     private LabeledTextPanel fromPanel = new LabeledTextPanel("From", new JTextField(20));
     private LabeledTextPanel toPanel = new LabeledTextPanel("To", new JTextField(20));
     private RandomPanel randomSubjectPanel;
@@ -44,5 +45,20 @@ public class EmlPanel extends JPanel{
         boolean isRandomContent = contentData.isRandom();
 
         return new EmlData(from, to, subject, content, isRandomSubject, isRandomContent);
+    }
+
+    @Override
+    public boolean dataInvalidCheck() {
+        boolean result = true;
+
+        if(StringUtils.isBlank(fromPanel.getText())){
+            this.alertInvalidMessage("From");
+            result = false;
+        }else if(StringUtils.isBlank(toPanel.getText())){
+            this.alertInvalidMessage("To");
+            result = false;
+        }
+
+        return result;
     }
 }
