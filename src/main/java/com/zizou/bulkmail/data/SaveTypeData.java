@@ -9,11 +9,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SaveTypeData {
-    private String path;
     private int count;
 
-    public SaveTypeData(String path, int count) {
-        this.path = path;
+    public SaveTypeData(int count) {
         this.count = count;
     }
 }

@@ -1,8 +1,14 @@
 package com.zizou.bulkmail.gui.panel;
 
-import com.zizou.bulkmail.data.EmlData;
+import com.zizou.bulkmail.data.LocalSaveTypeData;
 import com.zizou.bulkmail.data.SaveTypeData;
-import com.zizou.bulkmail.service.EmlCreator;
+import com.zizou.bulkmail.data.ScpSaveTypeData;
+import com.zizou.bulkmail.data.SmtpSaveTypeData;
+import com.zizou.bulkmail.gui.panel.save.AbstractSaveTypePanel;
+import com.zizou.bulkmail.service.AbstractMailSender;
+import com.zizou.bulkmail.service.LocalMailSender;
+import com.zizou.bulkmail.service.ScpMailSender;
+import com.zizou.bulkmail.service.SmtpMailSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +19,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by zizou on 2017-08-16.
@@ -49,27 +53,44 @@ public class RootPanel extends JPanel {
          @Override
          public void actionPerformed(ActionEvent e) {
             try{
-               EmlCreator creator = new EmlCreator();
-               if(getData(creator)){
-                  int count = creator.create();
-                  JOptionPane.showMessageDialog(RootPanel.this, count + " Messages created!");
+               log.info("actionPerformed start!!");
+               if(checkInvalidData()){
+                  log.info("actionPerformed in!!");
+                  SaveTypeData saveTypeData = savePanel.getSaveTypeData();
+
+                  AbstractMailSender mailSender = getMailSender(saveTypeData);
+                  mailSender.setEmlData(emlPanel.getEmlData());
+                  mailSender.setSaveTypeData(saveTypeData);
+                  if(mailSender.initializeData()){
+                     int count = mailSender.send();
+                     JOptionPane.showMessageDialog(RootPanel.this, count + " Messages send!");
+                  }else{
+                     JOptionPane.showMessageDialog(RootPanel.this, " Messages send fail");
+                  }
                }
+               log.info("actionPerformed end!!");
             }catch (Exception ex){
                log.info(ex.getMessage());
+               JOptionPane.showMessageDialog(RootPanel.this, ex.getMessage());
             }
 
          }
       };
    }
 
-   private boolean getData(EmlCreator creator){
-      boolean result = false;
-      if(this.emlPanel.dataInvalidCheck() && this.savePanel.dataInvalidCheck()){
-         creator.setEmlData(emlPanel.getEmlData());
-         creator.setSaveTypeData(savePanel.getSaveTypeData());
-         result = true;
+   private AbstractMailSender getMailSender(SaveTypeData data){
+      if(data instanceof LocalSaveTypeData){
+         return new LocalMailSender();
+      }else if(data instanceof ScpSaveTypeData){
+         return new ScpMailSender();
+      }else if(data instanceof SmtpSaveTypeData){
+         return new SmtpMailSender();
+      }else{
+         return new LocalMailSender();
       }
+   }
 
-      return result;
+   private boolean checkInvalidData(){
+      return this.emlPanel.dataInvalidCheck() && this.savePanel.dataInvalidCheck();
    }
 }

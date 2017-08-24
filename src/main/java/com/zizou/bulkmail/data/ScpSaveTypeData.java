@@ -9,13 +9,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ScpSaveTypeData extends SaveTypeData{
+    private String path;
     private String host;
     private String port;
     private String id;
     private String pw;
 
     public ScpSaveTypeData(String path, int count, String host, String port, String id, String pw) {
-        super(path, count);
+        super(count);
+        this.path = path;
         this.host = host;
         this.port = port;
         this.id = id;

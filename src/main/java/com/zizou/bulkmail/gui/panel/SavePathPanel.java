@@ -1,9 +1,11 @@
 package com.zizou.bulkmail.gui.panel;
 
 import com.zizou.bulkmail.data.SaveTypeData;
+import com.zizou.bulkmail.gui.MainFrame;
 import com.zizou.bulkmail.gui.panel.save.AbstractSaveTypePanel;
 import com.zizou.bulkmail.gui.panel.save.LocalSaveTypePanel;
 import com.zizou.bulkmail.gui.panel.save.ScpSaveTypePanel;
+import com.zizou.bulkmail.gui.panel.save.SmtpSaveTypePanel;
 import com.zizou.bulkmail.service.ModuleService;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,7 @@ import java.awt.event.ActionListener;
 public class SavePathPanel extends AbstractPanel{
     private JRadioButton local = new JRadioButton("local");
     private JRadioButton scp = new JRadioButton("scp");
+    private JRadioButton smtp = new JRadioButton("smtp");
     private AbstractSaveTypePanel selectedSaveTypePanel;
     private JPanel saveTypePanel = new JPanel(new BorderLayout());
     private JPanel typeInputPanel = new JPanel(new BorderLayout());
@@ -31,19 +34,22 @@ public class SavePathPanel extends AbstractPanel{
         this.saveTypePanel.setLayout(new FlowLayout());
         this.saveTypePanel.add(this.local);
         this.saveTypePanel.add(this.scp);
+        this.saveTypePanel.add(this.smtp);
 
         ButtonGroup saveTypeButtonGroup = new ButtonGroup();
         saveTypeButtonGroup.add(this.local);
         saveTypeButtonGroup.add(this.scp);
+        saveTypeButtonGroup.add(this.smtp);
 
         ActionListener saveTypeListener = createSaveTypeButtonListener();
         this.local.addActionListener(saveTypeListener);
         this.scp.addActionListener(saveTypeListener);
-
-        this.local.doClick();
+        this.smtp.addActionListener(saveTypeListener);
 
         this.add(saveTypePanel, "Bottom");
         this.add(typeInputPanel);
+
+        this.local.doClick();
     }
 
     private ActionListener createSaveTypeButtonListener(){
@@ -53,8 +59,13 @@ public class SavePathPanel extends AbstractPanel{
                 Object selectedButton = e.getSource();
                 if(selectedButton == SavePathPanel.this.local){
                     SavePathPanel.this.selectedSaveTypePanel = setTypeInputPanel(ModuleService.getBean(LocalSaveTypePanel.class));
+                    ModuleService.getBean(MainFrame.class).setSize(800, 700);
                 }else if(selectedButton == SavePathPanel.this.scp){
                     SavePathPanel.this.selectedSaveTypePanel = setTypeInputPanel(ModuleService.getBean(ScpSaveTypePanel.class));
+                    ModuleService.getBean(MainFrame.class).setSize(800, 800);
+                }else if(selectedButton == SavePathPanel.this.smtp){
+                    SavePathPanel.this.selectedSaveTypePanel = setTypeInputPanel(ModuleService.getBean(SmtpSaveTypePanel.class));
+                    ModuleService.getBean(MainFrame.class).setSize(800, 950);
                 }
             }
         };

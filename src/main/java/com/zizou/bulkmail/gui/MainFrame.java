@@ -23,7 +23,7 @@ public class MainFrame extends JFrame{
     public void showWindow(){
         this.setDefaultCloseOperation(3);
         this.setTitle("Bulk Mail Sender by zizou");
-        this.setSize(800, 800);
+        this.setSize(800, 700);
         this.initLayout();
         this.setVisible(true);
     }

@@ -1,6 +1,7 @@
 package com.zizou.bulkmail.service;
 
 import com.zizou.bulkmail.util.EncodingTextUtil;
+import org.apache.commons.net.smtp.SMTPClient;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -13,7 +14,12 @@ import java.util.Properties;
 /**
  * Created by zizou on 2017-08-17.
  */
-public class SmtpMailSender {
+public class SmtpMailSender extends AbstractMailSender{
+    @Override
+    public int send() throws Exception {
+        return 0;
+    }
+
     public MimeBodyPart buildMimeBodyPart(){
         MimeBodyPart part = new MimeBodyPart();
         try{
@@ -35,9 +41,13 @@ public class SmtpMailSender {
     }
 
     public void sendMail() throws Exception{
+
         Properties props = System.getProperties();
         //props.setProperty("mail.smtp.host", "smtp.gmail.com");
         props.setProperty("mail.smtp.host", "172.22.1.103");
+
+        SMTPClient client = new SMTPClient("UTF-8");
+        //client.setSender();
 
         Session session = Session.getDefaultInstance(props);
         session.setDebug(true);

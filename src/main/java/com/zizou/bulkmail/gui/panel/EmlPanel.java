@@ -1,8 +1,9 @@
 package com.zizou.bulkmail.gui.panel;
 
 import com.zizou.bulkmail.data.EmlData;
-import com.zizou.bulkmail.data.RandomPanelData;
+import com.zizou.bulkmail.data.CheckBoxPanelData;
 import com.zizou.bulkmail.gui.ui.LabeledTextPanel;
+import com.zizou.bulkmail.gui.ui.TextCheckBoxPanel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +17,8 @@ import javax.swing.*;
 public class EmlPanel extends AbstractPanel{
     private LabeledTextPanel fromPanel = new LabeledTextPanel("From", new JTextField(20));
     private LabeledTextPanel toPanel = new LabeledTextPanel("To", new JTextField(20));
-    private RandomPanel randomSubjectPanel;
-    private RandomPanel randomContentPanel;
+    private TextCheckBoxPanel randomSubjectPanel;
+    private TextCheckBoxPanel randomContentPanel;
 
     @PostConstruct
     public void init(){
@@ -27,22 +28,22 @@ public class EmlPanel extends AbstractPanel{
 
         LabeledTextPanel subjectPanel = new LabeledTextPanel("Subject", new JTextField(30));
         LabeledTextPanel contentPanel = new LabeledTextPanel("Content", new JTextArea(10, 50));
-        randomSubjectPanel = new RandomPanel(subjectPanel);
-        randomContentPanel = new RandomPanel(contentPanel);
+        randomSubjectPanel = new TextCheckBoxPanel("random", subjectPanel, false);
+        randomContentPanel = new TextCheckBoxPanel("random", contentPanel, false);
 
         this.add(this.randomSubjectPanel);
         this.add(this.randomContentPanel);
     }
 
     public EmlData getEmlData(){
-        RandomPanelData subjectData = randomSubjectPanel.getRandomPanelData();
-        RandomPanelData contentData = randomContentPanel.getRandomPanelData();
+        CheckBoxPanelData subjectData = randomSubjectPanel.getCheckBoxPanelData();
+        CheckBoxPanelData contentData = randomContentPanel.getCheckBoxPanelData();
         String from = fromPanel.getText();
         String to = toPanel.getText();
         String subject = subjectData.getText();
         String content = contentData.getText();
-        boolean isRandomSubject = subjectData.isRandom();
-        boolean isRandomContent = contentData.isRandom();
+        boolean isRandomSubject = subjectData.isChecked();
+        boolean isRandomContent = contentData.isChecked();
 
         return new EmlData(from, to, subject, content, isRandomSubject, isRandomContent);
     }

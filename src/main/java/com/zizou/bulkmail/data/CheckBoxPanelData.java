@@ -8,12 +8,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class RandomPanelData {
-    private boolean isRandom;
+public class CheckBoxPanelData {
+    private boolean isChecked;
     private String text;
 
-    public RandomPanelData(boolean isRandom, String text) {
-        this.isRandom = isRandom;
+    public CheckBoxPanelData(boolean isChecked, String text) {
+        this.isChecked = isChecked;
         this.text = text;
     }
 }
