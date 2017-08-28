@@ -71,6 +71,10 @@ public class SavePathPanel extends AbstractPanel{
         };
     }
 
+    public AbstractSaveTypePanel getSelectedSaveTypePanel() {
+        return this.selectedSaveTypePanel;
+    }
+
     private AbstractSaveTypePanel setTypeInputPanel(AbstractSaveTypePanel panel){
         this.typeInputPanel.removeAll();
         this.typeInputPanel.add(panel);

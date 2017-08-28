@@ -70,10 +70,21 @@ public class SmtpSaveTypePanel extends AbstractSaveTypePanel{
     public SaveTypeData getSaveTypeData() {
         CheckBoxPanelData limitTimeData = this.limitTimePanel.getCheckBoxPanelData();
         CheckBoxPanelData limitCountData = this.limitCountPanel.getCheckBoxPanelData();
+
         return new SmtpSaveTypeData(Integer.parseInt(this.countPanel.getText()), this.hostPanel.getText(), this.portPanel.getText(),
                                     this.mailFromPanel.getText(), this.rcptToPanel.getText(),
-                                    Integer.parseInt(limitTimeData.getText()), Integer.parseInt(limitCountData.getText()),
+                                    getLimitData(limitTimeData), getLimitData(limitCountData),
                                     limitTimeData.isChecked(), limitCountData.isChecked());
+    }
+
+    private int getLimitData(CheckBoxPanelData data){
+        String limitText;
+        if(data.isChecked()){
+            limitText = data.getText();
+        }else{
+            limitText = "1";
+        }
+        return Integer.parseInt(limitText);
     }
 
     @Override

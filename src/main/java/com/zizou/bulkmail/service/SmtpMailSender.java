@@ -1,62 +1,71 @@
 package com.zizou.bulkmail.service;
 
-import com.zizou.bulkmail.util.EncodingTextUtil;
-import org.apache.commons.net.smtp.SMTPClient;
+import com.zizou.bulkmail.data.SmtpSaveTypeData;
+import com.zizou.bulkmail.thread.job.SmtpSendJob;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.Properties;
+import javax.mail.MessagingException;
+import java.io.IOException;
 
 /**
  * Created by zizou on 2017-08-17.
  */
 public class SmtpMailSender extends AbstractMailSender{
+    private static final Logger log = LoggerFactory.getLogger(SmtpMailSender.class);
+
     @Override
-    public int send() throws Exception {
-        return 0;
+    public int send(){
+        SmtpSaveTypeData data = (SmtpSaveTypeData)this.saveTypeData;
+        int sendCount = data.getCount();
+        int limitedCount = data.getLimitCount();
+        int limitedTime = data.getLimitTime() * 1000;
+        int success = 0;
+
+        // there are possible three cases.
+        // time && count, only time, nothing
+        // only time case, time is true and limitedCunt is default value(=1)
+        // in this case, i % limitedCount always return 0
+        try{
+            for(int i = 1; i <= sendCount; i++){
+                if(data.isUseLimitTime() && (i % limitedCount == 0)){
+                    this.waitThread(limitedTime + 1000);
+                }
+                SmtpSendJob job = new SmtpSendJob();
+                job.setData(data);
+                job.setMessage(this.makeMimeMessage());
+                this.workers.execute(job);
+                success++;
+            }
+            this.waitForAllJobFinish();
+        }catch (MessagingException e){
+            log.info(e.getMessage());
+            this.terminateWorkers();
+        }
+
+
+        return success;
     }
 
-    public MimeBodyPart buildMimeBodyPart(){
-        MimeBodyPart part = new MimeBodyPart();
+    private void terminateWorkers(){
         try{
-            part.setText("abc");
-            part.setHeader("Content-Transfer-Encoding", "quoted-printable");
-        }catch (MessagingException e){
+            this.workers.terminate();
+        }catch (InterruptedException e){
+            log.info("terminate fail... " + e.getMessage());
+        }
+    }
+
+    private void waitForAllJobFinish(){
+        while(this.workers.isRun()){
+            this.waitThread(1000);
+        }
+    }
+
+    private void waitThread(int time){
+        try{
+            Thread.sleep((long)time);
+        }catch (InterruptedException e){
             e.printStackTrace();
         }
-        return part;
-    }
-
-    public MimeMessage buildMimeHeader() throws UnsupportedEncodingException, MessagingException{
-        MimeMessage mimeMessage = new MimeMessage((Session.getInstance(new Properties())));
-        mimeMessage.setSubject(EncodingTextUtil.encodeText("123", "", ""));
-        mimeMessage.setSentDate(new Date());
-        mimeMessage.addFrom(new Address[]{new InternetAddress("thecarlos@naver.com")});
-        mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress("gzbale@gmail.com"));
-        return mimeMessage;
-    }
-
-    public void sendMail() throws Exception{
-
-        Properties props = System.getProperties();
-        //props.setProperty("mail.smtp.host", "smtp.gmail.com");
-        props.setProperty("mail.smtp.host", "172.22.1.103");
-
-        SMTPClient client = new SMTPClient("UTF-8");
-        //client.setSender();
-
-        Session session = Session.getDefaultInstance(props);
-        session.setDebug(true);
-        MimeMessage msg = new MimeMessage(session);
-        msg.setFrom("thecarlos@daou.co.kr");
-        msg.addRecipient(Message.RecipientType.TO, new InternetAddress("thecarlos@naver.com"));
-        msg.setSubject("test subject");
-        msg.setContent("test content", "text/html; charset=utf-8");
-
-        Transport.send(msg);
     }
 }

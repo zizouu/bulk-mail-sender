@@ -22,7 +22,7 @@ public class LocalMailSender extends AbstractMailSender{
             File emlFile = new File(((LocalSaveTypeData)this.saveTypeData).getPath(), getEmlFileName() + ".eml");
             try(FileOutputStream fos = new FileOutputStream(emlFile)){
                 if(emlFile.isFile()){
-                    message.writeTo(fos);
+                    this.makeMimeMessage().writeTo(fos);
                     result++;
                 }
             }catch (IOException e){

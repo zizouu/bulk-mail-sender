@@ -2,8 +2,12 @@ package com.zizou.bulkmail.gui.panel;
 
 import com.zizou.bulkmail.data.EmlData;
 import com.zizou.bulkmail.data.CheckBoxPanelData;
+import com.zizou.bulkmail.gui.panel.save.AbstractSaveTypePanel;
+import com.zizou.bulkmail.gui.panel.save.SmtpSaveTypePanel;
 import com.zizou.bulkmail.gui.ui.LabeledTextPanel;
 import com.zizou.bulkmail.gui.ui.TextCheckBoxPanel;
+import com.zizou.bulkmail.service.AbstractMailSender;
+import com.zizou.bulkmail.service.ModuleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -38,8 +42,8 @@ public class EmlPanel extends AbstractPanel{
     public EmlData getEmlData(){
         CheckBoxPanelData subjectData = randomSubjectPanel.getCheckBoxPanelData();
         CheckBoxPanelData contentData = randomContentPanel.getCheckBoxPanelData();
-        String from = fromPanel.getText();
-        String to = toPanel.getText();
+        String from = fromPanel.getText().trim();
+        String to = toPanel.getText().trim();
         String subject = subjectData.getText();
         String content = contentData.getText();
         boolean isRandomSubject = subjectData.isChecked();
@@ -51,13 +55,16 @@ public class EmlPanel extends AbstractPanel{
     @Override
     public boolean dataInvalidCheck() {
         boolean result = true;
+        AbstractSaveTypePanel panel = ModuleService.getBean(SavePathPanel.class).getSelectedSaveTypePanel();
 
-        if(StringUtils.isBlank(fromPanel.getText())){
-            this.alertInvalidMessage("From");
-            result = false;
-        }else if(StringUtils.isBlank(toPanel.getText())){
-            this.alertInvalidMessage("To");
-            result = false;
+        if(!(panel instanceof SmtpSaveTypePanel)){
+            if(StringUtils.isBlank(fromPanel.getText())){
+                this.alertInvalidMessage("From");
+                result = false;
+            }else if(StringUtils.isBlank(toPanel.getText())){
+                this.alertInvalidMessage("To");
+                result = false;
+            }
         }
 
         return result;

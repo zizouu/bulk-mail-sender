@@ -56,10 +56,10 @@ public class RootPanel extends JPanel {
                log.info("actionPerformed start!!");
                if(checkInvalidData()){
                   log.info("actionPerformed in!!");
-                  SaveTypeData saveTypeData = savePanel.getSaveTypeData();
+                  SaveTypeData saveTypeData = RootPanel.this.savePanel.getSaveTypeData();
 
-                  AbstractMailSender mailSender = getMailSender(saveTypeData);
-                  mailSender.setEmlData(emlPanel.getEmlData());
+                  AbstractMailSender mailSender = RootPanel.this.getMailSender(saveTypeData);
+                  mailSender.setEmlData(RootPanel.this.emlPanel.getEmlData());
                   mailSender.setSaveTypeData(saveTypeData);
                   if(mailSender.initializeData()){
                      int count = mailSender.send();
