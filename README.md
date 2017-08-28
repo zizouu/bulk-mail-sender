@@ -5,4 +5,4 @@
   - If use random subject and content then create 10 length random string subject and 30 length random string content.
 - Send mail by smtp host. one Recipient
   - can use send limit time per seconds (limit time)
-  - can use the number of send per limit time
+  - can use the number of send eml per limit time (limit count)
