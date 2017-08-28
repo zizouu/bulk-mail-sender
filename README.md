@@ -10,6 +10,6 @@
 ### 3. Smtp Send
 - Send mail by smtp host. one Recipient.
 - Can use send limit time per seconds (limit time).
-- Can use the number of send eml per limit time (limit count).
+- Can use the number of transmit eml per limit time (limit count).
 - Support multi thread.
   
