@@ -15,6 +15,7 @@ import java.awt.*;
 
 @Component
 public class MainFrame extends JFrame{
+    private static final String VERSION = "v0.0.1";
     private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
 
     @Autowired
@@ -22,7 +23,7 @@ public class MainFrame extends JFrame{
 
     public void showWindow(){
         this.setDefaultCloseOperation(3);
-        this.setTitle("Bulk Mail Sender by zizou");
+        this.setTitle("Bulk Mail Sender by zizou - " + VERSION);
         this.setSize(800, 700);
         this.initLayout();
         this.setVisible(true);
