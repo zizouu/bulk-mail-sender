@@ -41,6 +41,9 @@ public class SavePathPanel extends AbstractPanel{
         saveTypeButtonGroup.add(this.scp);
         saveTypeButtonGroup.add(this.smtp);
 
+        // temporary block
+        this.scp.setEnabled(false);
+
         ActionListener saveTypeListener = createSaveTypeButtonListener();
         this.local.addActionListener(saveTypeListener);
         this.scp.addActionListener(saveTypeListener);
