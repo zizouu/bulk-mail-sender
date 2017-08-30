@@ -1,6 +1,7 @@
 # bulk-mail-sender
 ## v0.0.1 - 2017/08/28
 ### 1. Summary
+- Simple mail sender for dummy mail.
 - Save eml to local path, send eml by smtp.
 - Can adjust the number of save/send eml.
 ### 2. Local Save
